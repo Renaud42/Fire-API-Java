@@ -8,9 +8,9 @@ public class Status1 {
 	private boolean online;
 	private String status;
 	private ArrayList<String> cpu;
-	private double[] ram;
-	private double[] disk;
-	private ArrayList<String> units;
+	private Storage ram;
+	private Storage disk;
+	private Units units;
 	private String hostname;
 	
 	// Getters and setters
@@ -32,22 +32,22 @@ public class Status1 {
 	public void setCpu(ArrayList<String> cpu) {
 		this.cpu = cpu;
 	}
-	public double[] getRam() {
+	public Storage getRam() {
 		return ram;
 	}
-	public void setRam(double[] ram) {
+	public void setRam(Storage ram) {
 		this.ram = ram;
 	}
-	public double[] getDisk() {
+	public Storage getDisk() {
 		return disk;
 	}
-	public void setDisk(double[] disk) {
+	public void setDisk(Storage disk) {
 		this.disk = disk;
 	}
-	public ArrayList<String> getUnits() {
+	public Units getUnits() {
 		return units;
 	}
-	public void setUnits(ArrayList<String> units) {
+	public void setUnits(Units units) {
 		this.units = units;
 	}
 	public String getHostname() {

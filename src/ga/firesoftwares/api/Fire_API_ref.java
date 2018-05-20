@@ -696,6 +696,7 @@ import ga.firesoftwares.api.enums.OS;
 import ga.firesoftwares.api.enums.ServerInfoTypes;
 import ga.firesoftwares.api.math.Constants;
 import ga.firesoftwares.api.objects.json.API;
+import ga.firesoftwares.api.objects.json.MumbleStatus;
 import ga.firesoftwares.api.objects.json.Status;
 
 /**
@@ -726,13 +727,52 @@ public class Fire_API_ref {
 	public static Object getServerInformation(ServerInfoTypes infoType) throws Exception {
 		destroyTempJSON();
 		initialize(infoType);
-
+		
+		MumbleStatus mumbleStatus = null;
+		Status status = null;
+		
 		final Gson gson = new GsonBuilder().create();
+		
+		// Trying to initialize corresponding file.
+		try {
+			status = gson.fromJson(new String(Files.readAllBytes(Paths.get(Constants.API_ApplicationPath + "temp.json")), Charset.defaultCharset()), Status.class);
+		} catch(Exception e) {}
+		try {
+			mumbleStatus = gson.fromJson(new String(Files.readAllBytes(Paths.get(Constants.API_ApplicationPath + "temp.json")), Charset.defaultCharset()), MumbleStatus.class);
+		} catch(Exception e) {}
+		
 		
 		switch(infoType) {
 		case CPU_USE_1:
-			Status status = gson.fromJson(new String(Files.readAllBytes(Paths.get(Constants.API_ApplicationPath + "temp.json")), Charset.defaultCharset()), Status.class);
+			return status.getStatus().getCpu().get(1);
+		case CPU_USE_2:
+			return status.getStatus().getCpu().get(2);
+		case CPU_USE_AVERAGE:
+			return status.getStatus().getCpu().get(0);
+		case DISK_MAX:
+			return status.getStatus().getDisk().getTotal();
+		case DISK_PERCENT:
+			return status.getStatus().getDisk().getPercent();
+		case DISK_UNIT:
+			return status.getStatus().getUnits().getDisk();
+		case DISK_USED:
+			return status.getStatus().getDisk().getUsed();
+		case HOSTNAME:
 			return status.getStatus().getHostname();
+		case MUMBLE_ONLINE:
+			return mumbleStatus.getStatus().isOnline();
+		case MUMBLE_USERS:
+			return mumbleStatus.getStatus().getPlayers().getOnline();
+		case RAM_MAX:
+			return status.getStatus().getRam().getTotal();
+		case RAM_PERCENT:
+			return status.getStatus().getRam().getPercent();
+		case RAM_UNIT:
+			return status.getStatus().getUnits().getRam();
+		case RAM_USED:
+			return status.getStatus().getRam().getUsed();
+		case SERVER_ONLINE:
+			return status.getStatus().isOnline();
 		default:
 			throw new Exception("Invalid ServerInfoType.");
 		}
