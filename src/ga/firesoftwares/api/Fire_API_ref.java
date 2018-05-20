@@ -732,7 +732,6 @@ public class Fire_API_ref {
 		switch(infoType) {
 		case CPU_USE_1:
 			Status status = gson.fromJson(new String(Files.readAllBytes(Paths.get(Constants.API_ApplicationPath + "temp.json")), Charset.defaultCharset()), Status.class);
-			// TODO: Test
 			return status.getStatus().getHostname();
 		default:
 			throw new Exception("Invalid ServerInfoType.");
@@ -799,12 +798,12 @@ public class Fire_API_ref {
 		case RAM_USED:
 		case SERVER_ONLINE:
 			destroyTempJSON();
-			downloadFile("https://www.fire-softwares.ga/api/api.json", Constants.API_ApplicationPath);
+			downloadFile(Constants.JSON_VPS, Constants.API_ApplicationPath + "temp.json");
 			break;
 		case MUMBLE_ONLINE:
 		case MUMBLE_USERS:
 			destroyTempJSON();
-			downloadFile("https://www.fire-softwares.ga/api/api.json", Constants.API_ApplicationPath);
+			downloadFile(Constants.JSON_MUMBLE, Constants.API_ApplicationPath + "temp.json");
 			break;
 		default:
 			throw new Exception("Can't initialize the file corresponding to ServerInfoType \"" + infoType + "\"");
@@ -877,7 +876,7 @@ public class Fire_API_ref {
 						String jsonPath = applicationFolderRaw + "temp.json";
 						
 						// Download file to the Fire-API local path.
-						downloadFile("https://www.fire-softwares.ga/api/api.json", jsonPath);
+						downloadFile(Constants.API_InformationsFile, jsonPath);
 						
 						// Getting file content.
 						String s = new String(Files.readAllBytes(Paths.get(jsonPath)), Charset.defaultCharset());
