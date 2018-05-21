@@ -1,5 +1,10 @@
 package ga.firesoftwares.api.enums;
 
+/**
+ * Type of server info required.
+ * @author Renaud
+ *
+ */
 public enum ServerInfoTypes {
 	CPU_USE_1,
     CPU_USE_2,
@@ -15,5 +20,5 @@ public enum ServerInfoTypes {
     RAM_PERCENT,
     RAM_UNIT,
     RAM_USED,
-    SERVER_ONLINE
+    SERVER_ONLINE;
 }

@@ -678,8 +678,11 @@ Public License instead of this License.  But first, please read
 */
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -687,14 +690,23 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import ga.firesoftwares.api.enums.EncryptionAlgorithms;
+import ga.firesoftwares.api.enums.EncryptionTypes;
 import ga.firesoftwares.api.enums.OS;
 import ga.firesoftwares.api.enums.ServerInfoTypes;
+import ga.firesoftwares.api.enums.TempTypes;
+import ga.firesoftwares.api.enums.WriteMethods;
 import ga.firesoftwares.api.math.Constants;
+import ga.firesoftwares.api.objects.Simple3Des;
+import ga.firesoftwares.api.objects.TempObject;
 import ga.firesoftwares.api.objects.json.API;
 import ga.firesoftwares.api.objects.json.MumbleStatus;
 import ga.firesoftwares.api.objects.json.Status;
@@ -741,7 +753,7 @@ public class Fire_API_ref {
 			mumbleStatus = gson.fromJson(new String(Files.readAllBytes(Paths.get(Constants.API_ApplicationPath + "temp.json")), Charset.defaultCharset()), MumbleStatus.class);
 		} catch(Exception e) {}
 		
-		
+		// Return information corresponding to the specified ServerInfoType.
 		switch(infoType) {
 		case CPU_USE_1:
 			return status.getStatus().getCpu().get(1);
@@ -958,6 +970,219 @@ public class Fire_API_ref {
 		}
 	}
 	
+	/***************************************************
+	**               TEMP FOLDERS/FILES               **
+	***************************************************/
+
+	/**
+	 * Generate/regenerate the temp folder/file by giving the {@code TempObject}.
+	 * @param tempObject
+	 */
+	public static void generateTemp(TempObject tempObject) {
+		generateTemp(tempObject, WriteMethods.NO_OVERWRITE);
+	}
+	
+	/**
+	 * Generate/regenerate the temp folder/file by giving the {@code TempObject} and the {@code WriteMethods}.
+	 * @param tempObject
+	 * @param writeMethod
+	 */
+	public static void generateTemp(TempObject tempObject, WriteMethods writeMethod) {
+		if(tempObject.getTempType() == TempTypes.FILE) {
+			try {
+				File f = new File(tempObject.getTempDir() + tempObject.getTempName());
+
+				// Try to create or overwrite the file.
+				if(f.exists())
+					if(writeMethod == WriteMethods.OVERWRITE) {
+						// Force delete.
+						f.delete();
+						// Create new file.
+						f.createNewFile();
+					} else {
+						throw new IOException();
+					}
+				else
+					f.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				File f = new File(tempObject.getTempDir() + tempObject.getTempName());
+				
+				// Try to create the directory.
+				if(f.isDirectory() && f.exists())
+					if(writeMethod == WriteMethods.OVERWRITE) {
+						// Force delete.
+						f.delete();
+						// Create new directory.
+						f.mkdirs();
+					} else {
+						throw new IOException();
+					}
+				else if(f.isDirectory())
+					f.mkdirs();
+				else
+					throw new IOException();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Generate/regenerate the temp folder/file list by giving the {@code TempObject}.
+	 * @param tempList
+	 */
+	public static void generateAllTemp(List<TempObject> tempList) {
+		generateAllTemp(tempList, WriteMethods.NO_OVERWRITE);
+	}
+	
+	/**
+	 * Generate/regenerate the temp folder/file list by giving the {@code TempObject} and the {@code WriteMethods}.
+	 * @param tempList
+	 * @param writeMethod
+	 */
+	public static void generateAllTemp(List<TempObject> tempList, WriteMethods writeMethod) {
+		// Loop for generate all the temp folders/files.	
+		for(int i = 0; i < tempList.size(); i++) {
+			generateTemp(tempList.get(i), writeMethod);
+		}
+	}
+	
+	/**
+	 * Remove a temp folder/file by giving the {@code TempObject}.
+	 * @param tempObject
+	 */
+	public static void removeTemp(TempObject tempObject) {
+		File f = new File(tempObject.getTempDir() + tempObject.getTempName());
+		
+		// Delete the file/folder.
+		f.delete();
+	}
+	
+	/**
+	 * Remove multiple temp folders/files at once.
+	 * @param tempList
+	 */
+	public static void removeTemps(List<TempObject> tempList) {
+		// Loop for remove all the temp folders/files.	
+		for(int i = 0; i < tempList.size(); i++) {
+			removeTemp(tempList.get(i));
+		}
+	}
+	
+	/**
+	 * Edit a temp file by giving the {@code TempObject}, the {@code String} who the content is stored in, the append {@code boolean} and the encoding {@code String} for the file.
+	 * @param tempObject
+	 * @param content
+	 * @param append
+	 * @param encoding
+	 * @throws UnsupportedEncodingException 
+	 * @throws FileNotFoundException 
+	 */
+	public static void editTempFile(TempObject tempObject, List<String> content, boolean append, String encoding) throws FileNotFoundException, UnsupportedEncodingException {
+		if(tempObject.getTempType() == TempTypes.FILE) {
+			Path file = Paths.get(tempObject.getTempDir() + tempObject.getTempName());
+			
+			// Write into the file.
+			if(append) {
+				try {
+					Files.write(file, content, Charset.forName(encoding), StandardOpenOption.APPEND);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				try {
+					Files.write(file, content, Charset.forName(encoding));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		} else {
+			try {
+				throw new Exception("Can't edit a folder");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Get the content of a temp file.
+	 * @param tempObject
+	 */
+	public static List<String> getTempFileContent(TempObject tempObject) {
+		if(tempObject.getTempType() == TempTypes.FILE) {
+			try {
+				return Files.readAllLines(Paths.get(tempObject.getTempDir() + tempObject.getTempName()));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				throw new Exception("Can't get content of a folder");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		// Else, return null.
+		return null;
+	}
+	
+	/**
+	 * Rename a temp file/folder.
+	 * @param tempObject
+	 * @param newName
+	 */
+	public static void renameTemp(TempObject tempObject, String newName) {
+		// Replaces "/" for catching bugs with the encryption system
+		newName = newName.replace("/", ",");
+		
+		File f = new File(tempObject.getTempDir() + tempObject.getTempName());
+		
+		// Rename file.
+		f.renameTo(new File(tempObject.getTempDir() + newName));
+		
+		// Rename TempObject name.
+		tempObject.setTempName(newName);
+	}
+	
+	/**
+	 * Encrypt a temp file.
+     * <p>WARNING : The encryption works with TripleDES (see <see cref="Simple3Des"/> class) combined with the <see cref="EncryptionAlgorithm"/> that you choose. When encrypt a file name with this method, the "/" characters of the hash will be automatically replaced with "," because Windows doesn't accept file names with "/".</p>
+	 * @param tempObject
+	 * @param encryptionAlgorithm
+	 * @param encryptionType
+	 * @param baseEncoding
+	 * @param writeMethod
+	 * @param password
+	 */
+	public static void encryptFile(TempObject tempObject, EncryptionAlgorithms encryptionAlgorithm, EncryptionTypes encryptionType, String baseEncoding, WriteMethods writeMethod, String password) {
+		if(tempObject.getTempType() == TempTypes.FILE) {
+			if(encryptionType == EncryptionTypes.FILE_CONTENT) {
+				// TODO: With List<String> fix.
+				String encryptedText = Simple3Des.encryptData(getTempFileContent(tempObject));
+				
+				// We encrypt the file with the selected algorithm.
+				
+			} else if(encryptionType == EncryptionTypes.FILE_NAME) {
+				
+			} else {
+				
+			}
+		}
+	}
+	
     /***************************************************
     **                     UTILS                      **
     ***************************************************/
@@ -986,7 +1211,7 @@ public class Fire_API_ref {
 	 * Downloads specified file.
 	 * @param url
 	 * @param filePath
-	 * @throws IOException
+	 * @throws IOException Throwed when can't download file (for some reason).
 	 */
 	public static void downloadFile(String url, String filePath) throws IOException {
         // Setting application HTTP agent to "Chrome".

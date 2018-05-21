@@ -21,5 +21,5 @@ public enum OS {
 	/**
 	 * Solaris operating system.
 	 */
-	SOLARIS
+	SOLARIS;
 }
