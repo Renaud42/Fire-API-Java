@@ -1,8 +1,27 @@
 package ga.firesoftwares.api.math;
 
 public class Constants {
+
+    /***************************************************
+    **                     BINARY                     **
+    ***************************************************/
 	
 	// Constants
+	/**
+	 * Bit false, zero, no, low state
+	 */
+	public static final int BIT_False = 0, BIT_No = 0, BIT_Low = 0;
+	/**
+	 * Bit true, one, yes, high state
+	 */
+	public static final int BIT_True = 1, BIT_Yes = 1, BIT_High = 1;
+	
+	
+	
+	
+	// TODO: Incoming...
+	
+	
 	public static String API_ApplicationName = "";
 	public static String API_ApplicationPath = "";
     public static String API_Folder;

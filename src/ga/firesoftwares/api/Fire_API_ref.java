@@ -681,7 +681,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URL;
@@ -693,6 +692,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -991,7 +991,7 @@ public class Fire_API_ref {
 		if(tempObject.getTempType() == TempTypes.FILE) {
 			try {
 				File f = new File(tempObject.getTempDir() + tempObject.getTempName());
-
+				
 				// Try to create or overwrite the file.
 				if(f.exists())
 					if(writeMethod == WriteMethods.OVERWRITE) {
@@ -1023,10 +1023,8 @@ public class Fire_API_ref {
 					} else {
 						throw new IOException();
 					}
-				else if(f.isDirectory())
-					f.mkdirs();
 				else
-					throw new IOException();
+					f.mkdirs();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -1047,7 +1045,7 @@ public class Fire_API_ref {
 	 * @param writeMethod
 	 */
 	public static void generateAllTemp(List<TempObject> tempList, WriteMethods writeMethod) {
-		// Loop for generate all the temp folders/files.	
+		// Loop for generate all the temp folders/files.
 		for(int i = 0; i < tempList.size(); i++) {
 			generateTemp(tempList.get(i), writeMethod);
 		}
@@ -1069,7 +1067,7 @@ public class Fire_API_ref {
 	 * @param tempList
 	 */
 	public static void removeTemps(List<TempObject> tempList) {
-		// Loop for remove all the temp folders/files.	
+		// Loop for remove all the temp folders/files.
 		for(int i = 0; i < tempList.size(); i++) {
 			removeTemp(tempList.get(i));
 		}
@@ -1159,29 +1157,130 @@ public class Fire_API_ref {
 	
 	/**
 	 * Encrypt a temp file.
-     * <p>WARNING : The encryption works with TripleDES (see <see cref="Simple3Des"/> class) combined with the <see cref="EncryptionAlgorithm"/> that you choose. When encrypt a file name with this method, the "/" characters of the hash will be automatically replaced with "," because Windows doesn't accept file names with "/".</p>
+     * <p>WARNING : The encryption works with TripleDES (see {@code Simple3Des} class) combined with the {@code EncryptionAlgorithm} that you choose. When encrypt a file name with this method, the "/" characters of the hash will be automatically replaced with "," because Windows doesn't accept file names with "/".</p>
 	 * @param tempObject
 	 * @param encryptionAlgorithm
 	 * @param encryptionType
 	 * @param baseEncoding
 	 * @param writeMethod
 	 * @param password
+	 * @throws UnsupportedEncodingException 
+	 * @throws FileNotFoundException 
 	 */
-	public static void encryptFile(TempObject tempObject, EncryptionAlgorithms encryptionAlgorithm, EncryptionTypes encryptionType, String baseEncoding, WriteMethods writeMethod, String password) {
+	public static void encryptFile(TempObject tempObject, EncryptionAlgorithms encryptionAlgorithm, EncryptionTypes encryptionType, String baseEncoding, WriteMethods writeMethod, String password) throws FileNotFoundException, UnsupportedEncodingException {
 		if(tempObject.getTempType() == TempTypes.FILE) {
 			if(encryptionType == EncryptionTypes.FILE_CONTENT) {
-				// TODO: With List<String> fix.
-				String encryptedText = Simple3Des.encryptData(getTempFileContent(tempObject));
+				// Transform a List<String> to a String.
+				String plainText = new String();
+				for(String s : getTempFileContent(tempObject)) {
+					plainText += s + "\n";
+				}
 				
-				// We encrypt the file with the selected algorithm.
+				List<String> newContent = new ArrayList<String>();
 				
+				try {
+					// We encrypt the file with the selected algorithm.
+					newContent.add(Simple3Des.encryptData(plainText, password, encryptionAlgorithm));
+					
+					editTempFile(tempObject, newContent, false, baseEncoding);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			} else if(encryptionType == EncryptionTypes.FILE_NAME) {
-				
+				try {
+					// We encrypt the file name with the selected algorithm.
+					String newName = Simple3Des.encryptData(tempObject.getTempName(), password, encryptionAlgorithm);
+					
+					renameTemp(tempObject, newName);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			} else {
-				
+				encryptFile(tempObject, encryptionAlgorithm, EncryptionTypes.FILE_CONTENT, baseEncoding, writeMethod, password);
+				encryptFile(tempObject, encryptionAlgorithm, EncryptionTypes.FILE_NAME, baseEncoding, writeMethod, password);
 			}
 		}
 	}
+	
+	/**
+	 * Encrypt temp files.
+     * <p>WARNING : The encryption works with TripleDES (see {@code Simple3Des} class) combined with the {@code EncryptionAlgorithm} that you choose. When encrypt a file name with this method, the "/" characters of the hash will be automatically replaced with "," because Windows doesn't accept file names with "/".</p>
+	 * @param tempList
+	 * @param encryptionAlgorithm
+	 * @param encryptionType
+	 * @param baseEncoding
+	 * @param writeMethod
+	 * @param password
+	 * @throws UnsupportedEncodingException 
+	 * @throws FileNotFoundException 
+	 */
+	public static void encryptFiles(List<TempObject> tempList, EncryptionAlgorithms encryptionAlgorithm, EncryptionTypes encryptionType, String baseEncoding, WriteMethods writeMethod, String password) throws FileNotFoundException, UnsupportedEncodingException {
+		// Loop for encrypt all the temp files.
+		for(int i = 0; i < tempList.size(); i++) {
+			encryptFile(tempList.get(i), encryptionAlgorithm, encryptionType, baseEncoding, writeMethod, password);
+		}
+	}
+	
+	/**
+	 * Decrypt a temp file.
+	 * @param tempObject
+	 * @param encryptionAlgorithm
+	 * @param decryptionType
+	 * @param baseEncoding
+	 * @param writeMethod
+	 * @param password
+	 * @throws FileNotFoundException
+	 * @throws UnsupportedEncodingException
+	 */
+	public static void decryptFile(TempObject tempObject, EncryptionAlgorithms encryptionAlgorithm, EncryptionTypes decryptionType, String baseEncoding, WriteMethods writeMethod, String password) throws FileNotFoundException, UnsupportedEncodingException {
+		if(tempObject.getTempType() == TempTypes.FILE) {
+			if(decryptionType == EncryptionTypes.FILE_CONTENT) {
+				// Decrypt encrypted content.
+				String encryptedText = getTempFileContent(tempObject).get(0);
+				
+				List<String> decryptedText = new ArrayList<String>();
+				
+				try {
+					decryptedText.add(Simple3Des.decryptData(encryptedText, password, encryptionAlgorithm));
+					
+					editTempFile(tempObject, decryptedText, false, baseEncoding);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else if(decryptionType == EncryptionTypes.FILE_NAME) {
+				// Decrypt encrypted file name.				
+				try {
+					String decryptedText = Simple3Des.decryptData(tempObject.getTempName(), password, encryptionAlgorithm);
+					
+					renameTemp(tempObject, decryptedText);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				decryptFile(tempObject, encryptionAlgorithm, EncryptionTypes.FILE_CONTENT, baseEncoding, writeMethod, password);
+				decryptFile(tempObject, encryptionAlgorithm, EncryptionTypes.FILE_NAME, baseEncoding, writeMethod, password);
+			}
+		}
+	}
+	
+	/**
+	 * Decrypt temp files.
+	 * @param tempList
+	 * @param encryptionAlgorithm
+	 * @param encryptionType
+	 * @param baseEncoding
+	 * @param writeMethod
+	 * @param password
+	 * @throws FileNotFoundException
+	 * @throws UnsupportedEncodingException
+	 */
+	public static void decryptFiles(List<TempObject> tempList, EncryptionAlgorithms encryptionAlgorithm, EncryptionTypes decryptionType, String baseEncoding, WriteMethods writeMethod, String password) throws FileNotFoundException, UnsupportedEncodingException {
+		// Loop for decrypt all the temp files.
+		for(int i = 0; i < tempList.size(); i++) {
+			decryptFile(tempList.get(i), encryptionAlgorithm, decryptionType, baseEncoding, writeMethod, password);
+		}
+	}
+	
 	
     /***************************************************
     **                     UTILS                      **
