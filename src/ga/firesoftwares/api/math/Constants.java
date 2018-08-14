@@ -36,7 +36,7 @@ public class Constants {
 	/** 
 	 * Link of the JavaScript Object Notation web file with the informations of the latest version of the Fire-API.
 	 */
-	public static final String API_InformationsFile = "https://fire-softwares.ga/api/api.json";
+	public static final String API_InformationsFile = "https://api.fire-softwares.ga/api.json";
 	/** 
 	 * Current version of your API.
 	 */
@@ -127,12 +127,10 @@ public class Constants {
 	
 	// Stored PiDB
 	private static String TempPiDB1, TempPiDB2, TempPiDB3;
-	@SuppressWarnings("unused")
 	private static String PiDB1, PiDB2, PiDB3;
 
 	// Stored EulerDB
 	private static String TempEulerDB1, TempEulerDB2, TempEulerDB3;
-	@SuppressWarnings("unused")
 	private static String EulerDB1, EulerDB2, EulerDB3;
 
 	// Methods and functions
@@ -436,7 +434,7 @@ public class Constants {
 
 	/** 
 	 * Get the forbidden value of an homographic function (-d divided by c with c ≠ 0).
-	 * This value will define the set of definitions of the homographic function on ℝ \ {{@link HomographicForbiddenValue(Decimal, Decimal)} }.
+	 * This value will define the set of definitions of the homographic function on R \ {{@link HomographicForbiddenValue(Decimal, Decimal)} }.
 	 * 
 	 * @param c
 	 * @param d
@@ -447,7 +445,7 @@ public class Constants {
 	
 	
 	/***************************************************
-    **               PHYSICS & CHEMICAL               **
+    **               PHYSICS & CHEMISTRY              **
     ***************************************************/
 	
 	// Constants
@@ -462,15 +460,15 @@ public class Constants {
 	/** 
 	 * Light speed constant (m/s).
 	 */
-	public static final double C = 2.99792458 * Math.pow(10, 8), LightSpeed = 2.99792458 * Math.pow(10, 8);
+	public static final double C = 2.99792458 * Math.pow(10, 8), lightSpeed = 2.99792458 * Math.pow(10, 8);
 	/** 
 	 * Gravitational force on Earth.
 	 */
-	public static final double EarthGravitationalForce = 9.80665;
+	public static final double earthGravitationalForce = 9.80665;
 	/** 
 	 * Elementary charge constant.
 	 */
-	public static final double ElementaryCharge = 1.60219 * Math.pow(10, -19);
+	public static final double elementaryCharge = 1.60219 * Math.pow(10, -19);
 	/** 
 	 * Faraday's constant (C/mol).
 	 */
@@ -478,11 +476,11 @@ public class Constants {
 	/** 
 	 * Gravitational constant (N × m² × kg-²).
 	 */
-	public static final double G = 6.672 * Math.pow(10, -11), GravitationalConstant = 6.672 * Math.pow(10, -11);
+	public static final double G = 6.672 * Math.pow(10, -11), gravitationalConstant = 6.672 * Math.pow(10, -11);
 	/** 
 	 * Perfect gasses constant (J/(K/mol)).
 	 */
-	public static final double PerfectGasses = 8.3144;
+	public static final double perfectGasses = 8.3144;
 	/** 
 	 * Planck's constant (J × s)
 	 */
@@ -492,13 +490,13 @@ public class Constants {
 	/** 
 	 * Mass of an electron (kg)
 	 */
-	public static final double ElectronMass = 9.10953 * Math.pow(10, -31);
+	public static final double electronMass = 9.10953 * Math.pow(10, -31);
 	/** 
 	 * Mass of a neutron (kg)
 	 */
-	public static final double NeutronMass = 1.675 * Math.pow(10, -27);
+	public static final double neutronMass = 1.675 * Math.pow(10, -27);
 	/** 
 	 * Mass of a proton (kg)
 	 */
-	public static final double ProtonMass = 1.673 * Math.pow(10, -27);
+	public static final double protonMass = 1.673 * Math.pow(10, -27);
 }
