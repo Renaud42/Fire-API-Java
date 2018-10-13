@@ -5,6 +5,29 @@
   <groupId>ga.firesoftwares</groupId>
   <artifactId>api</artifactId>
   <version>1.0</version>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.7</version>
+        <extensions>true</extensions>
+        <configuration>
+          <serverId>ossrh</serverId>
+          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+          <autoReleaseAfterClose>true</autoReleaseAfterClose>
+        </configuration>
+   	  </plugin>
+    </plugins>
+  </build>
   <packaging>jar</packaging>
 
   <name>Fire-API</name>
@@ -18,6 +41,32 @@
     </license>
   </licenses>
 
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
+  
+  <scm>
+    <connection>scm:git:git://github.com/Fire-Softwares/Fire-API-Java.git</connection>
+    <developerConnection>scm:git:ssh://github.com/Fire-Softwares/Fire-API-Java.git</developerConnection>
+    <url>http://github.com/Fire-Softwares/Fire-API-Java</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <name>Renaud42</name>
+      <email>renaud42@fire-softwares.ga</email>
+      <organization>ga.firesoftwares</organization>
+      <organizationUrl>http://github.com/Fire-Softwares/</organizationUrl>
+    </developer>
+  </developers>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -29,4 +78,5 @@
 	  <version>2.8.5</version>
 	</dependency>
   </dependencies>
+  <description>Fire-API for Java by Renaud42.</description>
 </project>
