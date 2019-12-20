@@ -1,5 +1,11 @@
 package ga.firesoftwares.fireapi.constants;
 
+/**
+ * Physics and chemical related constants
+ * @author Renaud
+ * @since 1.1
+ * @version 1.1
+ */
 public class PhysChemConstants {
 	// Constants
 	/** 

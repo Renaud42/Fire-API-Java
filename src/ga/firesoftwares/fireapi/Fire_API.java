@@ -682,7 +682,7 @@ Public License instead of this License.  But first, please read
  * <br><br>
  * Initialization : {@code Fire_API fireAPI = new fireAPI();}
  * <br><br>
- * © 2019 Fire-Softwares, www.fire-softwares.ga
+ * © 2019 Fire-Softwares, {@link www.fire-softwares.ga}
  * <br>
  * Requirement : JDK/JRE 7+
  * 

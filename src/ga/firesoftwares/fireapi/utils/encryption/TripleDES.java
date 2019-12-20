@@ -25,7 +25,7 @@ public class TripleDES {
 	 * @param key The password
 	 * @param hashingAlgorithm The hashing algorithm
 	 * @return Text encrypted
-	 * @throws Exception Throwed when an error as occured while trying to encrypt specified data with specified key and specified encryption algorithm.
+	 * @throws Exception Thrown when an error as occured while trying to encrypt specified data with specified key and specified encryption algorithm.
 	 */
 	public static String encryptData(String plainText, String key, HashingAlgorithm hashingAlgorithm) throws Exception {
 		MessageDigest md = encryptionAlgorithmToMD(hashingAlgorithm);
@@ -53,7 +53,7 @@ public class TripleDES {
 	 * @param key The password
 	 * @param hashingAlgorithm The hashing algorithm
 	 * @return Text decrypted
-	 * @throws Exception Throwed when an error as occured while trying to decrypt specified data with specified key and specified encryption algorithm.
+	 * @throws Exception Thrown when an error as occured while trying to decrypt specified data with specified key and specified encryption algorithm.
 	 */
 	public static String decryptData(String encryptedText, String key, HashingAlgorithm hashingAlgorithm) throws Exception {
 	    byte[] message = Base64.getDecoder().decode(encryptedText.getBytes("utf-8"));
@@ -74,11 +74,11 @@ public class TripleDES {
 	}
 	
 	/**
-	 * Turns an EncryptionAlgorithm to a MessageDigest object.
-	 * @param enc
-	 * @return MessageDigest
-	 * @throws NoSuchAlgorithmException Throwed when specified an invalid {@link HashingAlgorithm}
-	 * @throws EncryptionException Throwed when specified an unknown {@link HashingAlgorithm}
+	 * Turns an {@link HashingAlgorithm} to a MessageDigest object.
+	 * @param hashingAlgorithm Hashing algorithm to turn HashingAlgorithm to
+	 * @return MessageDigest Corresponding {@link MessageDigest} instance
+	 * @throws NoSuchAlgorithmException Thrown when specified an invalid {@link HashingAlgorithm}
+	 * @throws EncryptionException Thrown when specified an unknown {@link HashingAlgorithm}
 	 */
 	private static MessageDigest encryptionAlgorithmToMD(HashingAlgorithm hashingAlgorithm) throws NoSuchAlgorithmException, EncryptionException {
 		// Return MessageDigest object corresponding to correct hashing algorithm

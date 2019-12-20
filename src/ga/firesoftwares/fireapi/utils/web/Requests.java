@@ -18,9 +18,9 @@ public class Requests {
 	 * Get a Web file content
 	 * @param url URL to the file
 	 * @return Content of file
-	 * @throws IOException 
+	 * @throws IOException Thrown when file not found on distant web server
 	 */
-	public String getWebFileContent(String url) throws IOException {
+	public static String getWebFileContent(String url) throws IOException {
 		// Getting content from web
 		URL urlObj = new URL(url);
         InputStream is = new BufferedInputStream(urlObj.openConnection().getInputStream());

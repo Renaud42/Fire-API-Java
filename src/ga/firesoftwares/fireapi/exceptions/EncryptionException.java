@@ -10,7 +10,7 @@ import ga.firesoftwares.fireapi.constants.Messages;
  */
 public class EncryptionException extends Exception {
 	/**
-	 * Serial version Unique IDentifier
+	 * Serial version Unique Identifier
 	 */
 	private static final long serialVersionUID = 2260836082749051182L;
 	

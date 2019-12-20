@@ -6,10 +6,7 @@ package ga.firesoftwares.fireapi.utils.math;
  * @since 1.1
  * @version 1.1
  */
-public class Compute {
-	// Constructor
-	public Compute() {}
-	
+public class Compute {	
 	// -------------------------------------------
     // FUNCTIONS & METHODS
     // -------------------------------------------
