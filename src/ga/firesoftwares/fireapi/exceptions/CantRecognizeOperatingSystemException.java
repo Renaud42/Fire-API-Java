@@ -3,7 +3,7 @@ package ga.firesoftwares.fireapi.exceptions;
 import ga.firesoftwares.fireapi.constants.Messages;
 
 /**
- * Represents an error which throws when trying to use a wrong {@link ga.firesoftwares.fireapi.enums.server.ServerName}
+ * Represents an error when can't recognize OS
  * @author Renaud
  * @since 1.1
  * @version 1.1

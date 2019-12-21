@@ -1,5 +1,10 @@
 package ga.firesoftwares.fireapi;
 
+import ga.firesoftwares.fireapi.constants.Messages;
+import ga.firesoftwares.fireapi.enums.server.ServerInfoType;
+import ga.firesoftwares.fireapi.enums.server.ServerName;
+import ga.firesoftwares.fireapi.server.API;
+
 /*                     GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
 
@@ -680,7 +685,7 @@ Public License instead of this License.  But first, please read
 /**
  * Definitively best class ever.
  * <br><br>
- * Initialization : {@code Fire_API fireAPI = new fireAPI();}
+ * Initialization : {@code Fire_API fireAPI = new Fire_API();}
  * <br><br>
  * © 2019 Fire-Softwares, {@link www.fire-softwares.ga}
  * <br>
@@ -713,6 +718,22 @@ public class Fire_API {
 	 * Updates check method
 	 */
 	private void updatesCheck() {
-		
+		try {
+			API updater = new API();
+			if ((boolean) updater.getServerInformation(ServerName.FIRE_SOFTWARES, ServerInfoType.ONLINE)) {
+				String lastversion = (String) updater.getServerInformation(ServerName.API_STATUS, ServerInfoType.VERSION);
+				double lastversionAsDouble = Double.parseDouble(lastversion), apiVersion = Double.parseDouble(API_VERSION);
+				if (lastversionAsDouble > apiVersion)
+					System.out.println(Messages.API_WARNING_PREFIX + " " + Messages.API_UPDATE_AVAILABLE.replace("%new-version%", lastversion).replace("%api-update-page%", API_UPDATE_PAGE));
+				else if (lastversionAsDouble < apiVersion)
+					System.out.println(Messages.API_WARNING_PREFIX + " " + Messages.API_BETA.replace("%api-version%", API_VERSION).replace("%lastest-stable%", lastversion).replace("%api-update-page%", API_UPDATE_PAGE));
+				else
+					System.out.println(Messages.API_PREFIX + " " + Messages.API_UP_TO_DATE.replace("%api-version%", API_VERSION));
+			}
+		} catch (Exception ex) {
+			System.err.println(Messages.API_ERROR_PREFIX + " " + Messages.UPDATE_CHECK_EXCEPTION);
+			System.err.println(Messages.API_ERROR_PREFIX + " " + ex.getMessage());
+		}
+		System.out.println(System.lineSeparator() + Messages.API_PREFIX + " " + Messages.API_HELLO.replace("%api-version%", API_VERSION));
 	}
 }

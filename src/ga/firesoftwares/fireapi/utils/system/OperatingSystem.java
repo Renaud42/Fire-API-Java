@@ -10,20 +10,21 @@ import ga.firesoftwares.fireapi.enums.system.OS;
  */
 public class OperatingSystem {
 	/**
-	 * Detect operating system.
+	 * Detect operating system
 	 * @param os OS String
 	 * @return OS The OS
 	 * @throws Exception Thrown when can't recognize operating system.
 	 */
 	public static OS detectOS(String os) throws Exception {
+		String lcOS = os.toLowerCase();
 		// Return the operating system based on the String who is given in parameters.
-		if (os.toLowerCase().contains("win"))
+		if (lcOS.contains("win"))
 			return OS.WINDOWS;
-		else if (os.toLowerCase().contains("mac"))
+		else if (lcOS.contains("mac"))
 			return OS.MACINTOSH;
-		else if (os.toLowerCase().contains("sun") || os.toLowerCase().contains("sola"))
+		else if (lcOS.contains("sun") || lcOS.contains("sola"))
 			return OS.SOLARIS;
-		else if (os.toLowerCase().contains("ix") || os.toLowerCase().contains("nux") || os.toLowerCase().contains("hp-"))
+		else if (lcOS.contains("ix") || lcOS.contains("nux") || lcOS.contains("hp-"))
 			return OS.UNIX;
 		else
 			throw new Exception("Can't recognize operating system !");

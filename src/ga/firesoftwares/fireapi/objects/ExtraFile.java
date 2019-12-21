@@ -23,7 +23,7 @@ public class ExtraFile {
 	 * <br><br>
 	 *  WARNING : The encryption works with {@link TripleDES} combined with the {@link HashingAlgorithm} that you choose.
      * <br>
-     *  When encrypt a file name with this method, the "/" characters of the hash will be automatically replaced with "," because Windows doesn't accept file names with "/".
+     *  When encrypt a file name with this method, the "/" characters of the hash will be automatically replaced with ",", and "\" with ";" because Windows doesn't accept file names with "/".
 	 * @param filePath Path to the file
 	 * @param hashingAlgorithm Hashing algorithm used to encrypt file
 	 * @param encType Encryption type used (file content, file name, both)
@@ -51,7 +51,7 @@ public class ExtraFile {
 				out.close();
 			} else if (encType == EncryptionType.FILE_NAME) {
 				// Encrypting file content
-				String encryptedText = TripleDES.encryptData(Paths.get(filePath).getFileName().toString(), password, hashingAlgorithm).replace("/", ",");
+				String encryptedText = TripleDES.encryptData(Paths.get(filePath).getFileName().toString(), password, hashingAlgorithm).replace("/", ",").replace("\\", ";");
 				
 				// Renaming file
 				Files.move(Paths.get(filePath), Paths.get(filePath).resolveSibling(encryptedText));
@@ -67,7 +67,7 @@ public class ExtraFile {
 	 * <br><br>
 	 *  WARNING : The encryption works with {@link TripleDES} combined with the {@link HashingAlgorithm} that you choose.
      * <br>
-     *  When decrypt a file name with this method, the "," characters of the hash will be automatically restored with "/" because Windows doesn't accept file names with "/".
+     *  When decrypt a file name with this method, the "," characters of the hash will be automatically restored with "/", and ";" with "\" because Windows doesn't accept file names with "/".
 	 * @param filePath Path to the file
 	 * @param hashingAlgorithm Hashing algorithm used to encrypt file
 	 * @param encType Encryption type used (file content, file name, both)
@@ -95,7 +95,7 @@ public class ExtraFile {
 				out.close();
 			} else if (encType == EncryptionType.FILE_NAME) {
 				// Encrypting file content
-				String decryptedText = TripleDES.decryptData(Paths.get(filePath).getFileName().toString(), password, hashingAlgorithm).replace(",", "/");
+				String decryptedText = TripleDES.decryptData(Paths.get(filePath).getFileName().toString().replace(",", "/").replace(";", "\\"), password, hashingAlgorithm);
 				
 				// Renaming file
 				Files.move(Paths.get(filePath), Paths.get(filePath).resolveSibling(decryptedText));

@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.URL;
 
 /**
@@ -21,6 +22,9 @@ public class Requests {
 	 * @throws IOException Thrown when file not found on distant web server
 	 */
 	public static String getWebFileContent(String url) throws IOException {
+        // Setting application HTTP agent to "Chrome".
+        System.setProperty("http.agent", "Chrome");
+        
 		// Getting content from web
 		URL urlObj = new URL(url);
         InputStream is = new BufferedInputStream(urlObj.openConnection().getInputStream());
@@ -33,6 +37,17 @@ public class Requests {
         // Creating String with content in buffer
         while ((content = reader.readLine()) != null) sb.append(content);
         
-        return content;
+        return sb.toString();
+	}
+	
+	/**
+	 * Check if network is available.
+	 * @param checkAddress Network address to ping
+	 * @param timeout Timeout in milliseconds
+	 * @return boolean true if network is available
+	 * @throws IOException Thrown if file is not found
+	 */
+	public static boolean netIsAvailable(InetAddress checkAddress, int timeout) throws IOException {    	
+		return checkAddress.isReachable(timeout);
 	}
 }
