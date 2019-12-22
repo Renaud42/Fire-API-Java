@@ -36,10 +36,11 @@ public class API {
 	
 	// Functions and methods
 	/**
-	 * 
-	 * @param name
-	 * @param infotype
-	 * @return
+	 * Returns a specified information of the specified server
+	 * @param name The server that you want information about
+	 * @param infotype Type of information needed
+	 * @param refreshfile Did the file need to be refreshed
+	 * @return The information needed
 	 * @throws WrongServerInfoTypeException 
 	 * @throws ParseException 
 	 * @throws UnknownServerException 
@@ -53,11 +54,11 @@ public class API {
 		return getServerInformation(name, infotype, true);
 	}
 	/**
-	 * 
-	 * @param name
-	 * @param infotype
-	 * @param refreshfile
-	 * @return
+	 * Returns a specified information of the specified server
+	 * @param name The server that you want information about
+	 * @param infotype Type of information needed
+	 * @param refreshfile Did the file need to be refreshed
+	 * @return The information needed
 	 * @throws IOException 
 	 * @throws UnknownHostException 
 	 * @throws NetworkUnavailableException 
